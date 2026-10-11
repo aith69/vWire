@@ -112,24 +112,27 @@ test('uniqueEntryNames: duplicati con numero, senza distinguere maiuscole', () =
   assert.deepEqual(uniqueEntryNames(['d/a.txt', 'd/a.txt', 'a.txt']), ['d/a.txt', 'd/a (2).txt', 'a.txt']);
 });
 
-test('dosDateTime e nome predefinito', () => {
+test('dosDateTime: data e ora in formato MS-DOS', () => {
   const stamp = dosDateTime(new Date(2026, 9, 5, 12, 34, 56));
   assert.equal(stamp.time, (12 << 11) | (34 << 5) | 28);
   assert.equal(stamp.date, (46 << 9) | (10 << 5) | 5);
   assert.equal(dosDateTime(new Date(1970, 0, 1)).date >> 9, 0, 'prima del 1980 si ferma al 1980');
-  assert.equal(defaultZipName(new Date(2026, 9, 5, 14, 7, 9)), 'files_261005140709_abcd.zip');
-  assert.equal(defaultZipName(new Date(2031, 0, 2, 0, 0, 0)), 'files_310102000000.zip', 'zeri iniziali');
-  assert.notEqual(
-    defaultZipName(new Date(2026, 9, 5, 14, 7, 9)),
-    defaultZipName(new Date(2026, 9, 5, 14, 7, 10)),
-    'secondi diversi, nomi diversi',
-  );
+});
+
+test('defaultZipName: data e ora locali, poi 4 caratteri casuali', () => {
+  const at = (h, m, sec) => new Date(2026, 9, 5, h, m, sec);
+  assert.equal(defaultZipName(at(14, 7, 9), 'abcd'), 'files_261005140709_abcd.zip');
+  assert.equal(defaultZipName(new Date(2031, 0, 2, 0, 0, 0), 'x1y2'), 'files_310102000000_x1y2.zip', 'zeri iniziali');
+  assert.notEqual(defaultZipName(at(14, 7, 9), 'abcd'), defaultZipName(at(14, 7, 10), 'abcd'), 'secondi diversi');
+  for (let i = 0; i < 200; i++) {
+    assert.match(defaultZipName(at(14, 7, 9)), /^files_261005140709_[a-z0-9]{4}\.zip$/);
+  }
 });
 
 test('buildZip: struttura corretta, nomi UTF-8, duplicati, checksum e contenuto', async () => {
   const files = sampleFiles();
   const zip = await buildZip(files, { chunkSize: 4096 });
-  assert.match(zip.name, /^files_\d{12}\.zip$/);
+  assert.match(zip.name, /^files_\d{12}_[a-z0-9]{4}\.zip$/);
   assert.equal(zip.type, 'application/zip');
 
   const bytes = Buffer.from(await zip.arrayBuffer());
