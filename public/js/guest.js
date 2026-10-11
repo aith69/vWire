@@ -3,6 +3,7 @@ import { runTransfer } from './transfer.js';
 import { keepAwake } from './wakelock.js';
 import { CODE_LENGTH, digitsOf, formatCode } from './code.js';
 import { glyph } from './emoji.js';
+import { resolveSelection } from './select.js';
 import { $, showScreen, showMessage } from './ui.js';
 
 /**
@@ -16,6 +17,7 @@ export function startGuest(ctx, { id = null } = {}) {
   let transfer = null;
   let done = false;
   let waiting = false;
+  let selecting = false;
   let phase = 'code'; // 'code' | 'verify'
   const early = [];
 
@@ -103,11 +105,27 @@ export function startGuest(ctx, { id = null } = {}) {
       status.hidden = true;
       upload.hidden = false;
       upload.onclick = () => input.click();
-      input.onchange = () => {
-        const file = input.files[0];
-        if (!file) return;
-        transfer.setFile(file);
-        transfer.show();
+      input.onchange = async () => {
+        const picked = Array.from(input.files);
+        input.value = '';
+        if (picked.length === 0 || selecting) return;
+        selecting = true;
+        try {
+          const result = await resolveSelection(picked, { t, maxBytes: ctx.maxTransferBytes });
+          if (done) return; // the session ended while the files were being prepared
+          if (result.cancelled) return showScreen('guest');
+          if (result.message) {
+            // Say it under the button and let the user pick again.
+            status.textContent = result.message;
+            status.hidden = false;
+            return showScreen('guest');
+          }
+          status.hidden = true;
+          transfer.setFile(result.file);
+          transfer.show();
+        } finally {
+          selecting = false;
+        }
       };
     });
 

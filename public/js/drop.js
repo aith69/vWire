@@ -1,26 +1,30 @@
 /** True if the drag carries files (and not, say, selected text or a link). */
 export const hasFiles = (dataTransfer) => Array.from(dataTransfer?.types ?? []).includes('Files');
 
-/** The single dropped file: { file }, or { error: 'empty' | 'multiple' | 'folder' }. */
-export function pickDroppedFile(dataTransfer) {
+/**
+ * The dropped files: { files }, or { error: 'empty' | 'folder' }.
+ * A folder anywhere in the drop rejects the whole drop: a partial selection would be sent without warning.
+ */
+export function pickDroppedFiles(dataTransfer) {
   const items = Array.from(dataTransfer?.items ?? []).filter((item) => item.kind === 'file');
   const files = Array.from(dataTransfer?.files ?? []);
-  const count = Math.max(items.length, files.length);
-  if (count === 0) return { error: 'empty' };
-  if (count > 1) return { error: 'multiple' };
-  const entry = items[0]?.webkitGetAsEntry?.();
-  if (entry && !entry.isFile) return { error: 'folder' };
-  if (!files[0]) return { error: 'empty' };
-  return { file: files[0] };
+  if (Math.max(items.length, files.length) === 0) return { error: 'empty' };
+  const hasFolder = items.some((item) => {
+    const entry = item.webkitGetAsEntry?.();
+    return entry && !entry.isFile;
+  });
+  if (hasFolder) return { error: 'folder' };
+  if (files.length === 0) return { error: 'empty' };
+  return { files };
 }
 
 /**
- * Drag and drop of one file onto the page.
+ * Drag and drop of one or more files onto the page.
  * - `isActive()` tells whether a drop is accepted right now (only on the home screen).
  * - A drop is ALWAYS cancelled for the browser: otherwise it would open the file, leave the page
  *   and end a transfer in progress.
  */
-export function attachDrop(doc, { overlay, isActive, onFile }) {
+export function attachDrop(doc, { overlay, isActive, onFiles }) {
   let depth = 0;
   let timer = null;
 
@@ -66,8 +70,8 @@ export function attachDrop(doc, { overlay, isActive, onFile }) {
     const active = isActive();
     hide();
     if (!active) return;
-    const result = pickDroppedFile(event.dataTransfer);
-    if (result.file) onFile(result.file);
+    const result = pickDroppedFiles(event.dataTransfer);
+    if (result.files) onFiles(result.files);
     else if (result.error !== 'empty') flashInvalid();
   });
 }

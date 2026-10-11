@@ -1,9 +1,11 @@
 import { loadTranslations, createTranslator, applyTranslations } from './i18n.js';
 import { randomDarkTheme, applyTheme } from './theme.js';
-import { $, showScreen } from './ui.js';
+import { $, showScreen, showMessage } from './ui.js';
 import { startHost } from './host.js';
 import { startGuest } from './guest.js';
 import { attachDrop } from './drop.js';
+import { parseServerConfig } from './limits.js';
+import { resolveSelection } from './select.js';
 
 applyTheme(document, randomDarkTheme());
 
@@ -15,22 +17,22 @@ const { lang, messages } = await loadTranslations({ languages: preferred });
 const t = createTranslator(messages);
 applyTranslations(document, t, lang);
 
-async function loadIceServers() {
+async function loadServerConfig() {
   try {
     const res = await fetch('/api/config', { cache: 'no-store' });
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data.iceServers)) return data.iceServers;
-    }
+    if (res.ok) return parseServerConfig(await res.json());
   } catch {
-    /* si prosegue senza server ICE: funziona solo in rete locale */
+    /* without the server settings: no STUN servers (local network only) and the default size limit */
   }
-  return [];
+  return parseServerConfig(null);
 }
+
+const serverConfig = await loadServerConfig();
 
 const ctx = {
   t,
-  iceServers: await loadIceServers(),
+  iceServers: serverConfig.iceServers,
+  maxTransferBytes: serverConfig.maxTransferBytes,
   signalingUrl: `${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}/ws`,
   goHome() {
     history.replaceState(null, '', location.pathname + location.search);
@@ -41,14 +43,28 @@ const ctx = {
 $('btn-receive').onclick = () => startHost(ctx, { mode: 'receive' });
 $('btn-code').onclick = () => startGuest(ctx);
 
-const sendFile = (file) => startHost(ctx, { mode: 'send', file });
+let selecting = false;
+
+/** Starts a transfer from the home page: one file as it is, several as a zip, unless over the limit. */
+async function sendFiles(files) {
+  if (selecting) return;
+  selecting = true;
+  try {
+    const result = await resolveSelection(files, { t, maxBytes: ctx.maxTransferBytes });
+    if (result.message) return showMessage(result.message, { onHome: ctx.goHome });
+    if (result.cancelled) return showScreen('home');
+    startHost(ctx, { mode: 'send', file: result.file });
+  } finally {
+    selecting = false;
+  }
+}
 
 const fileInput = $('file-send');
 $('btn-send').onclick = () => fileInput.click();
 fileInput.onchange = () => {
-  const file = fileInput.files[0];
+  const files = Array.from(fileInput.files);
   fileInput.value = '';
-  if (file) sendFile(file);
+  if (files.length) sendFiles(files);
 };
 
 // Drag and drop: accepted only on the home page. Elsewhere a dropped file is ignored
@@ -57,7 +73,7 @@ const homeScreen = document.querySelector('[data-screen="home"]');
 attachDrop(document, {
   overlay: $('drop-overlay'),
   isActive: () => !homeScreen.hidden,
-  onFile: sendFile,
+  onFiles: sendFiles,
 });
 
 const id = location.hash.slice(1);

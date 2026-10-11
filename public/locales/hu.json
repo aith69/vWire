@@ -78,5 +78,7 @@
   "emoji.tennis": "Teniszlabda",
   "emoji.target": "Céltábla",
   "emoji.trophy": "Trófea",
-  "drop.hint": "Húzz ide egyetlen fájlt"
+  "drop.hint": "Húzd ide a fájlokat",
+  "limit.exceeded": "A kijelölés túl nagy: {size} (legfeljebb {max})",
+  "zip.failed": "Nem sikerült előkészíteni a fájlokat. Válaszd ki őket újra."
 }

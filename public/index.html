@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#15181d">
   <title>{{name}}</title>
   <!-- font:preload -->
-  <link rel="preload" href="/fonts/press-start-2p-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/doto-latin-700.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /font:preload -->
   <link rel="stylesheet" href="/css/font.css">
   <link rel="stylesheet" href="/css/style.css">
@@ -17,7 +17,7 @@
       <h1>{{name}}</h1>
       <button id="btn-send" class="btn primary" data-i18n="home.send">Send a file</button>
       <button id="btn-receive" class="btn" data-i18n="home.receive">Receive a file</button>
-      <input id="file-send" type="file" hidden>
+      <input id="file-send" type="file" multiple hidden>
       <button id="btn-code" class="link" data-i18n="code.have">I have a code</button>
     </section>
 
@@ -65,7 +65,7 @@
       <p id="guest-status" class="hint"></p>
       <p id="guest-file" class="muted" hidden></p>
       <button id="guest-upload" class="btn primary" data-i18n="upload.button" hidden>Upload file</button>
-      <input id="file-upload" type="file" hidden>
+      <input id="file-upload" type="file" multiple hidden>
       <button id="guest-cancel" class="btn" data-i18n="common.cancel">Cancel</button>
     </section>
 
@@ -81,6 +81,17 @@
         <p id="stat-bytes" class="muted"></p>
       </div>
       <button id="transfer-stop" class="btn" data-i18n="transfer.stop">Stop transfer</button>
+    </section>
+
+    <section class="screen" data-screen="prepare" hidden>
+      <div class="ring">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <circle class="ring-track" cx="50" cy="50" r="44" pathLength="100"></circle>
+          <circle id="ring-fill" class="ring-fill" cx="50" cy="50" r="44" pathLength="100"></circle>
+        </svg>
+        <span class="ring-label">zip</span>
+      </div>
+      <button id="prepare-cancel" class="btn" type="button" data-i18n="common.cancel">Cancel</button>
     </section>
 
     <section class="screen" data-screen="message" hidden>
