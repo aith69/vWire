@@ -117,13 +117,19 @@ test('dosDateTime e nome predefinito', () => {
   assert.equal(stamp.time, (12 << 11) | (34 << 5) | 28);
   assert.equal(stamp.date, (46 << 9) | (10 << 5) | 5);
   assert.equal(dosDateTime(new Date(1970, 0, 1)).date >> 9, 0, 'prima del 1980 si ferma al 1980');
-  assert.equal(defaultZipName(new Date(2026, 9, 5)), 'files-2026-10-05.zip');
+  assert.equal(defaultZipName(new Date(2026, 9, 5, 14, 7, 9)), 'files_261005140709_abcd.zip');
+  assert.equal(defaultZipName(new Date(2031, 0, 2, 0, 0, 0)), 'files_310102000000.zip', 'zeri iniziali');
+  assert.notEqual(
+    defaultZipName(new Date(2026, 9, 5, 14, 7, 9)),
+    defaultZipName(new Date(2026, 9, 5, 14, 7, 10)),
+    'secondi diversi, nomi diversi',
+  );
 });
 
 test('buildZip: struttura corretta, nomi UTF-8, duplicati, checksum e contenuto', async () => {
   const files = sampleFiles();
   const zip = await buildZip(files, { chunkSize: 4096 });
-  assert.match(zip.name, /^files-\d{4}-\d{2}-\d{2}\.zip$/);
+  assert.match(zip.name, /^files_\d{12}\.zip$/);
   assert.equal(zip.type, 'application/zip');
 
   const bytes = Buffer.from(await zip.arrayBuffer());

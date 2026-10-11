@@ -78,6 +78,7 @@
   "emoji.tennis": "टेनिस बॉल",
   "emoji.target": "लक्ष्य",
   "emoji.trophy": "ट्रॉफ़ी",
-  "drop.hint": "यहाँ एक फ़ाइल छोड़ें",
-  "limit.exceeded": "चयन बहुत बड़ा है: {size} (अधिकतम {max})"
+  "drop.hint": "फ़ाइलें यहाँ छोड़ें",
+  "limit.exceeded": "चयन बहुत बड़ा है: {size} (अधिकतम {max})",
+  "zip.failed": "फ़ाइलें तैयार नहीं की जा सकीं। उन्हें फिर से चुनें।"
 }

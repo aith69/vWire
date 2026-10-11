@@ -19,6 +19,8 @@ up on the first device, and three emojis (from different categories) show up on 
 The two people confirm by voice ("the tiger") and the second device taps the matching emoji.
 This works for any pair of devices, including two computers.
 
+**Several files?** Select or drop them together: they are packed into a single `.zip` (stored without compression, so it is quick) and sent like any other file. The total size must stay within `maxTransferMb`. Folders are not supported yet.
+
 The QR code and the code expire after **60 seconds** if nobody connects. Once two devices are connected
 there is no time limit.
 

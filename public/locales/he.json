@@ -78,6 +78,7 @@
   "emoji.tennis": "כדור טניס",
   "emoji.target": "מטרה",
   "emoji.trophy": "גביע",
-  "drop.hint": "שחרר קובץ אחד כאן",
-  "limit.exceeded": "הבחירה גדולה מדי: {size} (מקסימום {max})"
+  "drop.hint": "שחרר קבצים כאן",
+  "limit.exceeded": "הבחירה גדולה מדי: {size} (מקסימום {max})",
+  "zip.failed": "לא ניתן היה להכין את הקבצים. בחר אותם שוב."
 }

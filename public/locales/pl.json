@@ -78,6 +78,7 @@
   "emoji.tennis": "Piłka tenisowa",
   "emoji.target": "Tarcza",
   "emoji.trophy": "Puchar",
-  "drop.hint": "Upuść tutaj jeden plik",
-  "limit.exceeded": "Zaznaczenie jest za duże: {size} (maksymalnie {max})"
+  "drop.hint": "Upuść tutaj pliki",
+  "limit.exceeded": "Zaznaczenie jest za duże: {size} (maksymalnie {max})",
+  "zip.failed": "Nie udało się przygotować plików. Zaznacz je ponownie."
 }

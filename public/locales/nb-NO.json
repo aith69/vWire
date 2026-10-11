@@ -78,6 +78,7 @@
   "emoji.tennis": "Tennisball",
   "emoji.target": "Skyteskive",
   "emoji.trophy": "Trofé",
-  "drop.hint": "Slipp én fil her",
-  "limit.exceeded": "Utvalget er for stort: {size} (maks. {max})"
+  "drop.hint": "Slipp filer her",
+  "limit.exceeded": "Utvalget er for stort: {size} (maks. {max})",
+  "zip.failed": "Kunne ikke klargjøre filene. Velg dem på nytt."
 }

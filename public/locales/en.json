@@ -78,6 +78,7 @@
   "emoji.tennis": "Tennis ball",
   "emoji.target": "Target",
   "emoji.trophy": "Trophy",
-  "drop.hint": "Drop a single file here",
-  "limit.exceeded": "Selection too large: {size} (maximum {max})"
+  "drop.hint": "Drop files here",
+  "limit.exceeded": "Selection too large: {size} (maximum {max})",
+  "zip.failed": "Could not prepare the files. Select them again."
 }

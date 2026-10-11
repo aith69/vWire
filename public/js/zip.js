@@ -95,9 +95,24 @@ export function uniqueEntryNames(paths) {
   });
 }
 
-export function defaultZipName(date = new Date()) {
+/** 4 random lowercase letters and digits: a last guard against two zips created in the same second. */
+export function randomId(length = 4) {
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  const bytes = globalThis.crypto.getRandomValues(new Uint8Array(length));
+  return Array.from(bytes, (byte) => alphabet[byte % alphabet.length]).join('');
+}
+
+/** files_yymmddhhmmss_id.zip, in the local time of the sender. */
+export function defaultZipName(date = new Date(), id = randomId()) {
   const pad = (n) => String(n).padStart(2, '0');
-  return `files-${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}.zip`;
+  const stamp =
+    pad(date.getFullYear() % 100) +
+    pad(date.getMonth() + 1) +
+    pad(date.getDate()) +
+    pad(date.getHours()) +
+    pad(date.getMinutes()) +
+    pad(date.getSeconds());
+  return `files_${stamp}_${id}.zip`;
 }
 
 // ---- date and headers ---------------------------------------------------------------------------

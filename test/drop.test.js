@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { hasFiles, pickDroppedFile } from '../public/js/drop.js';
+import { hasFiles, pickDroppedFiles } from '../public/js/drop.js';
 
 const fileItem = (isFile = true) => ({ kind: 'file', webkitGetAsEntry: () => ({ isFile }) });
 
@@ -13,26 +13,37 @@ test('hasFiles: solo i trascinamenti di file', () => {
   assert.equal(hasFiles(undefined), false);
 });
 
-test('pickDroppedFile: un solo file', () => {
-  const file = { name: 'a.txt' };
-  assert.deepEqual(pickDroppedFile({ files: [file], items: [fileItem()] }), { file });
-});
-
-test('pickDroppedFile: nessun file, più file, cartella', () => {
-  assert.deepEqual(pickDroppedFile({ files: [], items: [] }), { error: 'empty' });
-  assert.deepEqual(pickDroppedFile(undefined), { error: 'empty' });
+test('pickDroppedFiles: uno o più file', () => {
+  const one = { name: 'a.txt' };
+  const two = { name: 'b.txt' };
+  assert.deepEqual(pickDroppedFiles({ files: [one], items: [fileItem()] }), { files: [one] });
   assert.deepEqual(
-    pickDroppedFile({ files: [{}, {}], items: [fileItem(), fileItem()] }),
-    { error: 'multiple' },
+    pickDroppedFiles({ files: [one, two], items: [fileItem(), fileItem()] }),
+    { files: [one, two] },
   );
-  assert.deepEqual(pickDroppedFile({ files: [{ name: 'cartella' }], items: [fileItem(false)] }), { error: 'folder' });
 });
 
-test('pickDroppedFile: browser senza webkitGetAsEntry, e testo trascinato insieme', () => {
-  const file = { name: 'a.txt' };
-  assert.deepEqual(pickDroppedFile({ files: [file], items: [{ kind: 'file' }] }), { file });
+test('pickDroppedFiles: nessun file', () => {
+  assert.deepEqual(pickDroppedFiles({ files: [], items: [] }), { error: 'empty' });
+  assert.deepEqual(pickDroppedFiles(undefined), { error: 'empty' });
+});
+
+test('pickDroppedFiles: una cartella respinge tutto il rilascio, anche insieme ad altri file', () => {
   assert.deepEqual(
-    pickDroppedFile({ files: [file], items: [{ kind: 'string' }, fileItem()] }),
-    { file },
+    pickDroppedFiles({ files: [{ name: 'cartella' }], items: [fileItem(false)] }),
+    { error: 'folder' },
+  );
+  assert.deepEqual(
+    pickDroppedFiles({ files: [{ name: 'a' }, { name: 'cartella' }], items: [fileItem(), fileItem(false)] }),
+    { error: 'folder' },
+  );
+});
+
+test('pickDroppedFiles: browser senza webkitGetAsEntry, e testo trascinato insieme', () => {
+  const file = { name: 'a.txt' };
+  assert.deepEqual(pickDroppedFiles({ files: [file], items: [{ kind: 'file' }] }), { files: [file] });
+  assert.deepEqual(
+    pickDroppedFiles({ files: [file], items: [{ kind: 'string' }, fileItem()] }),
+    { files: [file] },
   );
 });
