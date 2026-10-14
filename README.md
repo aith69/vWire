@@ -195,6 +195,23 @@ The title font is configured separately, in `font.config.json`, because it is a 
 
 **Name.** Set `name` in `config.json`. It is the page title and heading, and there is nothing else to edit. It is not translated. The title font is wide: with the default settings keep the name to 9 characters or fewer, or lower `titleSize` in `font.config.json` and run `npm run font`. vWire prints a warning at startup if the name is too long.
 
+**About page.** The round **?** button on the home page opens a short page with a title, a text and a link,
+read from `about.json` in the application folder. Without that file, `about.example.json` is shown: it describes
+vWire and links to the source code. Copy it and write your own:
+
+~json
+{
+  "title": "About vWire",
+  "text": "First paragraph.\n\nSecond paragraph.",
+  "link": "https://github.com/aith69/vWire"
+}
+~
+
+`title` (up to 100 characters) and `text` (up to 4000) are required; `link` is optional and must be an `http(s)`
+address. `\n\n` starts a new paragraph. The text is plain text, with no HTML, and it is not translated (only the
+"Back to start" button is). Like `config.json`, the file is read at startup (restart after editing), it is ignored by
+git, and a file that is not valid stops the startup with a message. To hide the button, put `{}` in `about.json`.
+
 **Languages.** The language is detected from the browser, with English as the fallback. Translations are the
 files in `public/locales`, named after the language (`en.json`, `it.json`, `pt-BR.json`, `zh-TW.json`...).
 To add a language, copy the file in that folder and run `npm test`: it checks that every key and placeholder

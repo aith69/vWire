@@ -6,6 +6,7 @@ import { startGuest } from './guest.js';
 import { attachDrop } from './drop.js';
 import { parseServerConfig } from './limits.js';
 import { resolveSelection } from './select.js';
+import { parseAbout, fillAbout } from './about.js';
 
 applyTheme(document, randomDarkTheme());
 
@@ -20,11 +21,14 @@ applyTranslations(document, t, lang);
 async function loadServerConfig() {
   try {
     const res = await fetch('/api/config', { cache: 'no-store' });
-    if (res.ok) return parseServerConfig(await res.json());
+    if (res.ok) {
+      const data = await res.json();
+      return { ...parseServerConfig(data), about: parseAbout(data?.about) };
+    }
   } catch {
     /* without the server settings: no STUN servers (local network only) and the default size limit */
   }
-  return parseServerConfig(null);
+  return { ...parseServerConfig(null), about: null };
 }
 
 const serverConfig = await loadServerConfig();
@@ -42,6 +46,15 @@ const ctx = {
 
 $('btn-receive').onclick = () => startHost(ctx, { mode: 'receive' });
 $('btn-code').onclick = () => startGuest(ctx);
+
+// Info page: the "?" button exists only if the server has a text to show.
+if (serverConfig.about) {
+  fillAbout(serverConfig.about);
+  $('btn-about').onclick = () => showScreen('about');
+  $('about-back').onclick = ctx.goHome;
+} else {
+  $('btn-about').remove();
+}
 
 let selecting = false;
 
