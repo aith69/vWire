@@ -3,6 +3,7 @@ import { renderQr } from './qr.js';
 import { startCountdown } from './countdown.js';
 import { runTransfer } from './transfer.js';
 import { keepAwake } from './wakelock.js';
+import { hasWebRTC } from './webrtc.js';
 import { formatCode } from './code.js';
 import { glyph } from './emoji.js';
 import { $, showScreen, showMessage } from './ui.js';
@@ -99,7 +100,13 @@ export function startHost(ctx, { mode, file = null }) {
 
       s.on('peer-joined', () => {
         stopTimer();
-        transfer = runTransfer(ctx, { sig: s, initiator: true, role: mode, file, onEnd });
+        try {
+          transfer = runTransfer(ctx, { sig: s, initiator: true, role: mode, file, onEnd });
+        } catch (err) {
+          // e.g. no WebRTC in this browser: close the session so the other device is told at once
+          console.error('[vwire]', err);
+          return stop(hasWebRTC() ? 'error.generic' : 'webrtc.unsupported');
+        }
         transfer.show();
       });
 

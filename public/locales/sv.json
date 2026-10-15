@@ -80,5 +80,6 @@
   "emoji.trophy": "Trofé",
   "drop.hint": "Släpp filer här",
   "limit.exceeded": "Urvalet är för stort: {size} (högst {max})",
-  "zip.failed": "Det gick inte att förbereda filerna. Välj dem igen."
+  "zip.failed": "Det gick inte att förbereda filerna. Välj dem igen.",
+  "webrtc.unsupported": "Den här webbläsaren kan inte skapa direkta anslutningar mellan enheter (WebRTC är avstängt eller saknas). Prova en annan webbläsare."
 }

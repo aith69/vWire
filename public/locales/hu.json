@@ -80,5 +80,6 @@
   "emoji.trophy": "Trófea",
   "drop.hint": "Húzd ide a fájlokat",
   "limit.exceeded": "A kijelölés túl nagy: {size} (legfeljebb {max})",
-  "zip.failed": "Nem sikerült előkészíteni a fájlokat. Válaszd ki őket újra."
+  "zip.failed": "Nem sikerült előkészíteni a fájlokat. Válaszd ki őket újra.",
+  "webrtc.unsupported": "Ez a böngésző nem tud közvetlen kapcsolatot létesíteni az eszközök között (a WebRTC ki van kapcsolva vagy hiányzik). Próbálj ki másik böngészőt."
 }

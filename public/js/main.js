@@ -7,6 +7,7 @@ import { attachDrop } from './drop.js';
 import { parseServerConfig } from './limits.js';
 import { resolveSelection } from './select.js';
 import { parseAbout, fillAbout } from './about.js';
+import { hasWebRTC } from './webrtc.js';
 
 applyTheme(document, randomDarkTheme());
 
@@ -44,8 +45,19 @@ const ctx = {
   },
 };
 
-$('btn-receive').onclick = () => startHost(ctx, { mode: 'receive' });
-$('btn-code').onclick = () => startGuest(ctx);
+/** Without WebRTC (Tor Browser, hardened settings) no transfer can work: say so before creating anything. */
+function webrtcAvailable() {
+  if (hasWebRTC()) return true;
+  showMessage(t('webrtc.unsupported'), { onHome: ctx.goHome });
+  return false;
+}
+
+$('btn-receive').onclick = () => {
+  if (webrtcAvailable()) startHost(ctx, { mode: 'receive' });
+};
+$('btn-code').onclick = () => {
+  if (webrtcAvailable()) startGuest(ctx);
+};
 
 // Info page: the "?" button exists only if the server has a text to show.
 if (serverConfig.about) {
@@ -61,6 +73,7 @@ let selecting = false;
 /** Starts a transfer from the home page: one file as it is, several as a zip, unless over the limit. */
 async function sendFiles(files) {
   if (selecting) return;
+  if (!webrtcAvailable()) return;
   selecting = true;
   try {
     const result = await resolveSelection(files, { t, maxBytes: ctx.maxTransferBytes });
@@ -90,5 +103,8 @@ attachDrop(document, {
 });
 
 const id = location.hash.slice(1);
-if (/^[A-Za-z0-9_-]{16,64}$/.test(id)) startGuest(ctx, { id });
-else showScreen('home');
+if (/^[A-Za-z0-9_-]{16,64}$/.test(id)) {
+  if (webrtcAvailable()) startGuest(ctx, { id });
+} else {
+  showScreen('home');
+}

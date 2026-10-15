@@ -80,5 +80,6 @@
   "emoji.trophy": "Palkinto",
   "drop.hint": "Pudota tiedostot tähän",
   "limit.exceeded": "Valinta on liian suuri: {size} (enintään {max})",
-  "zip.failed": "Tiedostojen valmistelu epäonnistui. Valitse ne uudelleen."
+  "zip.failed": "Tiedostojen valmistelu epäonnistui. Valitse ne uudelleen.",
+  "webrtc.unsupported": "Tämä selain ei voi muodostaa suoria yhteyksiä laitteiden välille (WebRTC on pois päältä tai puuttuu). Kokeile toista selainta."
 }

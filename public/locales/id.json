@@ -80,5 +80,6 @@
   "emoji.trophy": "Trofi",
   "drop.hint": "Letakkan file di sini",
   "limit.exceeded": "Pilihan terlalu besar: {size} (maksimum {max})",
-  "zip.failed": "File tidak dapat disiapkan. Pilih lagi."
+  "zip.failed": "File tidak dapat disiapkan. Pilih lagi.",
+  "webrtc.unsupported": "Browser ini tidak dapat membuat koneksi langsung antarperangkat (WebRTC dimatikan atau tidak tersedia). Coba browser lain."
 }

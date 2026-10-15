@@ -80,5 +80,6 @@
   "emoji.trophy": "Trofee",
   "drop.hint": "Zet bestanden hier neer",
   "limit.exceeded": "Selectie te groot: {size} (maximaal {max})",
-  "zip.failed": "De bestanden konden niet worden voorbereid. Selecteer ze opnieuw."
+  "zip.failed": "De bestanden konden niet worden voorbereid. Selecteer ze opnieuw.",
+  "webrtc.unsupported": "Deze browser kan geen directe verbindingen tussen apparaten maken (WebRTC is uitgeschakeld of ontbreekt). Probeer een andere browser."
 }

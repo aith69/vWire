@@ -80,5 +80,6 @@
   "emoji.trophy": "Trofæ",
   "drop.hint": "Slip filer her",
   "limit.exceeded": "Valget er for stort: {size} (maksimum {max})",
-  "zip.failed": "Filerne kunne ikke gøres klar. Vælg dem igen."
+  "zip.failed": "Filerne kunne ikke gøres klar. Vælg dem igen.",
+  "webrtc.unsupported": "Denne browser kan ikke oprette direkte forbindelser mellem enheder (WebRTC er slået fra eller mangler). Prøv en anden browser."
 }

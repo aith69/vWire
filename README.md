@@ -43,7 +43,7 @@ there is no time limit.
 - Node.js **20 or newer** (`node -v`). Debian 12 ships Node 18: install a newer one from
   [NodeSource](https://github.com/nodesource/distributions) or [nvm](https://github.com/nvm-sh/nvm).
   Debian 13 and Arch Linux are fine.
-- A recent browser with WebRTC on both devices (Chrome, Firefox, Safari, Edge).
+- A recent browser with WebRTC on both devices (Chrome, Firefox, Safari, Edge). Tor Browser is not supported: it turns WebRTC off on purpose (WebRTC can reveal your real network address).
 - HTTPS if the service is reachable from the internet. A reverse proxy such as nginx or Caddy takes care of it.
 
 ## Quick start

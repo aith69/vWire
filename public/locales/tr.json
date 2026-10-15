@@ -80,5 +80,6 @@
   "emoji.trophy": "Kupa",
   "drop.hint": "Dosyaları buraya bırakın",
   "limit.exceeded": "Seçim çok büyük: {size} (en fazla {max})",
-  "zip.failed": "Dosyalar hazırlanamadı. Lütfen yeniden seçin."
+  "zip.failed": "Dosyalar hazırlanamadı. Lütfen yeniden seçin.",
+  "webrtc.unsupported": "Bu tarayıcı cihazlar arasında doğrudan bağlantı kuramıyor (WebRTC kapalı veya yok). Başka bir tarayıcı deneyin."
 }

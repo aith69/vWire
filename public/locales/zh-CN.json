@@ -80,5 +80,6 @@
   "emoji.trophy": "奖杯",
   "drop.hint": "将文件拖放到此处",
   "limit.exceeded": "所选内容过大：{size}（上限 {max}）",
-  "zip.failed": "无法准备这些文件。请重新选择。"
+  "zip.failed": "无法准备这些文件。请重新选择。",
+  "webrtc.unsupported": "此浏览器无法在设备之间建立直接连接（WebRTC 已关闭或不可用）。请尝试其他浏览器。"
 }
