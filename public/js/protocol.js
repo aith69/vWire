@@ -1,3 +1,5 @@
+import { stripInvisible, avoidReservedName } from './names.js';
+
 export const CHUNK_SIZE = 64 * 1024;
 export const MAX_NAME_LENGTH = 180;
 
@@ -18,8 +20,7 @@ export function parseControl(text) {
 
 /** Il nome arriva dall'altro dispositivo: va ripulito prima di usarlo per il download. */
 export function sanitizeFileName(name) {
-  let s = String(name ?? '')
-    .replace(/[\u0000-\u001f\u007f]/g, '')
+  let s = stripInvisible(name)
     .replace(/[\\/:*?"<>|]/g, '_')
     .trim()
     .replace(/^\.+/, '');
@@ -28,7 +29,8 @@ export function sanitizeFileName(name) {
     const ext = dot > 0 && s.length - dot <= 10 ? s.slice(dot) : '';
     s = s.slice(0, MAX_NAME_LENGTH - ext.length) + ext;
   }
-  return s || 'file';
+  s = s.replace(/[. ]+$/, ''); // Windows drops trailing dots and spaces
+  return s ? avoidReservedName(s) : 'file';
 }
 
 export function validateMeta(meta, maxBytes) {
