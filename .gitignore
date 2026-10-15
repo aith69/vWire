@@ -4,3 +4,6 @@ node_modules/
 .DS_Store
 config.json
 config.json.bak-*
+about.json
+*.bkp
+*.bak

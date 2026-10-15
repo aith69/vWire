@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { loadAbout } from './about.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -187,4 +188,5 @@ export default {
   ...loadConfig(),
   publicDir: join(root, 'public'),
   maxMessageBytes: 64 * 1024,
+  about: loadAbout(),
 };

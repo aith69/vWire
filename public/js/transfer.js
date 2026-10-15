@@ -5,6 +5,7 @@ import { encodeControl, parseControl, maxReceiveBytes } from './protocol.js';
 import { SpeedMeter, formatBytes, formatSpeed, formatEta } from './format.js';
 import { saveBlob } from './download.js';
 import { receiveLimit } from './limits.js';
+import { hasWebRTC } from './webrtc.js';
 import { $, showScreen } from './ui.js';
 
 const CONNECT_TIMEOUT_MS = 20_000;
@@ -14,6 +15,7 @@ const CONNECT_TIMEOUT_MS = 20_000;
  * role: 'send' | 'receive'. onEnd(chiaveMessaggio | null, parametri, azioneSalva).
  */
 export function runTransfer(ctx, { sig, initiator, role, file = null, onEnd }) {
+  if (!hasWebRTC()) throw new Error('webrtc_unavailable'); // before any side effect
   const { t } = ctx;
   const meter = new SpeedMeter();
   const el = {

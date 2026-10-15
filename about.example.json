@@ -1,0 +1,5 @@
+{
+  "title": "About vWire",
+  "text": "vWire sends a file straight from one device to another, right from the browser. Nothing to install and no account to create.\n\nPhone to phone, computer to phone, computer to computer: scan a QR code (or type a 6-digit code) and the transfer starts. The file travels directly between the two devices and is never stored on the server, which only introduces the two devices to each other.\n\nvWire is free and open source (MIT license). You can read the code, report a problem or run your own copy:",
+  "link": "https://github.com/aith69/vWire"
+}

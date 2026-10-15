@@ -1,6 +1,7 @@
 import { connectSignaling } from './signaling.js';
 import { runTransfer } from './transfer.js';
 import { keepAwake } from './wakelock.js';
+import { hasWebRTC } from './webrtc.js';
 import { CODE_LENGTH, digitsOf, formatCode } from './code.js';
 import { glyph } from './emoji.js';
 import { resolveSelection } from './select.js';
@@ -93,7 +94,12 @@ export function startGuest(ctx, { id = null } = {}) {
   function bind(s) {
     s.on('joined', (msg) => {
       waiting = false;
-      transfer = runTransfer(ctx, { sig: s, initiator: false, role: msg.role, onEnd });
+      try {
+        transfer = runTransfer(ctx, { sig: s, initiator: false, role: msg.role, onEnd });
+      } catch (err) {
+        console.error('[vwire]', err);
+        return stop(hasWebRTC() ? 'error.generic' : 'webrtc.unsupported');
+      }
       early.splice(0).forEach((data) => transfer.signal(data));
 
       if (msg.role === 'receive') {

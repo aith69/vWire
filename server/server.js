@@ -29,6 +29,7 @@ export function createServer(options = {}) {
         JSON.stringify({
           iceServers: options.iceServers ?? config.iceServers,
           maxTransferMb: options.maxTransferMb ?? config.maxTransferMb,
+          about: Object.hasOwn(options, 'about') ? options.about : config.about,
         }),
       );
     }

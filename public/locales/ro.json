@@ -80,5 +80,6 @@
   "emoji.trophy": "Trofeu",
   "drop.hint": "Plasează fișierele aici",
   "limit.exceeded": "Selecția este prea mare: {size} (maximum {max})",
-  "zip.failed": "Fișierele nu au putut fi pregătite. Selectează-le din nou."
+  "zip.failed": "Fișierele nu au putut fi pregătite. Selectează-le din nou.",
+  "webrtc.unsupported": "Acest browser nu poate crea conexiuni directe între dispozitive (WebRTC este dezactivat sau lipsește). Încearcă un alt browser."
 }

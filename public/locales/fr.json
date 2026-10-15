@@ -80,5 +80,6 @@
   "emoji.trophy": "Trophée",
   "drop.hint": "Déposez les fichiers ici",
   "limit.exceeded": "Sélection trop volumineuse : {size} (maximum {max})",
-  "zip.failed": "Impossible de préparer les fichiers. Sélectionnez-les à nouveau."
+  "zip.failed": "Impossible de préparer les fichiers. Sélectionnez-les à nouveau.",
+  "webrtc.unsupported": "Ce navigateur ne peut pas établir de connexions directes entre appareils (WebRTC est désactivé ou absent). Essayez un autre navigateur."
 }

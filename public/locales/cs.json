@@ -80,5 +80,6 @@
   "emoji.trophy": "Trofej",
   "drop.hint": "Pusťte sem soubory",
   "limit.exceeded": "Výběr je příliš velký: {size} (maximum {max})",
-  "zip.failed": "Soubory se nepodařilo připravit. Vyberte je znovu."
+  "zip.failed": "Soubory se nepodařilo připravit. Vyberte je znovu.",
+  "webrtc.unsupported": "Tento prohlížeč nedokáže vytvořit přímé spojení mezi zařízeními (WebRTC je vypnuto nebo chybí). Zkuste jiný prohlížeč."
 }

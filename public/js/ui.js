@@ -4,6 +4,10 @@ export function showScreen(name) {
   for (const el of document.querySelectorAll('[data-screen]')) {
     el.hidden = el.dataset.screen !== name;
   }
+  // Elements that belong to one screen but live outside it (the floating "?" button).
+  for (const el of document.querySelectorAll('[data-only-on]')) {
+    el.hidden = el.dataset.onlyOn !== name;
+  }
 }
 
 /** Messaggio finale con "torna all'inizio" e, se servono, "nuovo codice" e "salva di nuovo". */

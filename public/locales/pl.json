@@ -80,5 +80,6 @@
   "emoji.trophy": "Puchar",
   "drop.hint": "Upuść tutaj pliki",
   "limit.exceeded": "Zaznaczenie jest za duże: {size} (maksymalnie {max})",
-  "zip.failed": "Nie udało się przygotować plików. Zaznacz je ponownie."
+  "zip.failed": "Nie udało się przygotować plików. Zaznacz je ponownie.",
+  "webrtc.unsupported": "Ta przeglądarka nie może nawiązywać bezpośrednich połączeń między urządzeniami (WebRTC jest wyłączone lub niedostępne). Spróbuj użyć innej przeglądarki."
 }

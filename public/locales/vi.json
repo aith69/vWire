@@ -80,5 +80,6 @@
   "emoji.trophy": "Cúp",
   "drop.hint": "Thả các tệp vào đây",
   "limit.exceeded": "Lựa chọn quá lớn: {size} (tối đa {max})",
-  "zip.failed": "Không thể chuẩn bị các tệp. Hãy chọn lại."
+  "zip.failed": "Không thể chuẩn bị các tệp. Hãy chọn lại.",
+  "webrtc.unsupported": "Trình duyệt này không thể tạo kết nối trực tiếp giữa các thiết bị (WebRTC bị tắt hoặc không có). Hãy thử trình duyệt khác."
 }

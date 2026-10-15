@@ -4,7 +4,7 @@ import { createServer } from '../server/server.js';
 
 test('GET /api/config restituisce gli iceServers', async (t) => {
   const iceServers = [{ urls: 'stun:example.org:3478' }];
-  const server = createServer({ iceServers, maxTransferMb: 100 });
+  const server = createServer({ iceServers, maxTransferMb: 100, about: null });
   await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
   t.after(() => {
     server.closeAllConnections();
@@ -14,7 +14,7 @@ test('GET /api/config restituisce gli iceServers', async (t) => {
   const res = await fetch(`http://127.0.0.1:${server.address().port}/api/config`);
   assert.equal(res.status, 200);
   assert.equal(res.headers.get('cache-control'), 'no-store');
-  assert.deepEqual(await res.json(), { iceServers, maxTransferMb: 100 });
+  assert.deepEqual(await res.json(), { iceServers, maxTransferMb: 100, about: null });
 });
 
 test('GET /api/config: il limite predefinito è 512 MB', async (t) => {
@@ -27,4 +27,18 @@ test('GET /api/config: il limite predefinito è 512 MB', async (t) => {
 
   const res = await fetch(`http://127.0.0.1:${server.address().port}/api/config`);
   assert.equal((await res.json()).maxTransferMb, 512);
+});
+
+test('GET /api/config: include il testo della pagina informazioni (l\'esempio, nei test)', async (t) => {
+  const server = createServer();
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  t.after(() => {
+    server.closeAllConnections();
+    return new Promise((resolve) => server.close(resolve));
+  });
+
+  const { about } = await (await fetch(`http://127.0.0.1:${server.address().port}/api/config`)).json();
+  assert.equal(typeof about.title, 'string');
+  assert.equal(typeof about.text, 'string');
+  assert.match(about.link, /^https:\/\//);
 });
