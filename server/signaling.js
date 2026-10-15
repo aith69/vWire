@@ -1,6 +1,7 @@
 import { WebSocketServer } from 'ws';
 import { AttemptLimiter } from './ratelimit.js';
 import { clientIp } from './clientip.js';
+import { isAllowedOrigin } from './origin.js';
 
 const MODES = new Set(['send', 'receive']);
 const opposite = (mode) => (mode === 'send' ? 'receive' : 'send');
@@ -37,6 +38,8 @@ export function attachSignaling(
 ) {
   const wss = new WebSocketServer({ noServer: true, maxPayload: maxMessageBytes });
 
+  let lastOriginWarning = 0;
+
   httpServer.on('upgrade', (req, socket, head) => {
     let pathname = null;
     try {
@@ -46,6 +49,19 @@ export function attachSignaling(
     }
     if (pathname !== path) {
       socket.write('HTTP/1.1 404 Not Found\r\nConnection: close\r\n\r\n');
+      return socket.destroy();
+    }
+    if (!isAllowedOrigin(req.headers.origin, req.headers.host)) {
+      // Another website is using this server from a visitor's browser, or a proxy rewrites the Host header.
+      if (Date.now() - lastOriginWarning > 60_000) {
+        lastOriginWarning = Date.now();
+        console.warn(
+          `Warning: WebSocket refused: the page was opened from ${JSON.stringify(req.headers.origin)} ` +
+            `but the request reached the app with host ${JSON.stringify(req.headers.host)}. ` +
+            'Behind a reverse proxy, make sure the original Host header is forwarded.',
+        );
+      }
+      socket.write('HTTP/1.1 403 Forbidden\r\nConnection: close\r\n\r\n');
       return socket.destroy();
     }
     wss.handleUpgrade(req, socket, head, (ws) => wss.emit('connection', ws, req));
