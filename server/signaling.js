@@ -9,6 +9,17 @@ function send(ws, obj) {
   if (ws.readyState === ws.OPEN) ws.send(JSON.stringify(obj));
 }
 
+/** An error in one handler must not stop the whole service (and every session kept in memory with it). */
+function guard(label, fn) {
+  return (...args) => {
+    try {
+      return fn(...args);
+    } catch (err) {
+      console.error(`[vwire] error in "${label}":`, err?.stack ?? err);
+    }
+  };
+}
+
 function fail(ws, code, extra = {}) {
   send(ws, { type: 'error', code, ...extra });
 }
@@ -40,14 +51,14 @@ export function attachSignaling(
     wss.handleUpgrade(req, socket, head, (ws) => wss.emit('connection', ws, req));
   });
 
-  sessions.on('expired', (session) => {
+  sessions.on('expired', guard('expired', (session) => {
     session.owner.sessionId = null;
     send(session.owner, { type: 'expired' });
     if (session.pending) {
       session.pending.guest.sessionId = null;
       send(session.pending.guest, { type: 'expired' });
     }
-  });
+  }));
 
   function leave(ws) {
     const id = ws.sessionId;
@@ -171,7 +182,14 @@ export function attachSignaling(
       if (!msg || typeof msg.type !== 'string' || !Object.hasOwn(handlers, msg.type)) {
         return fail(ws, 'bad_message');
       }
-      handlers[msg.type](ws, msg);
+      try {
+        handlers[msg.type](ws, msg);
+      } catch (err) {
+        // Unknown state: tell the client and start from scratch on a new connection.
+        console.error(`[vwire] error in "${msg.type}":`, err?.stack ?? err);
+        fail(ws, 'internal_error');
+        ws.close(1011);
+      }
     });
 
     ws.on('close', () => leave(ws));
