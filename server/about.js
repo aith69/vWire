@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-export const ABOUT_LIMITS = { title: 100, text: 4000, link: 300 };
+export const ABOUT_LIMITS = { title: 100, text: 20000, link: 300 };
 
 const KEYS = ['title', 'text', 'link'];
 const BAD_TITLE = /[\u0000-\u001f\u007f]/;

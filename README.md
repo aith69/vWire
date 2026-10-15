@@ -207,7 +207,7 @@ vWire and links to the source code. Copy it and write your own:
 }
 ~
 
-`title` (up to 100 characters) and `text` (up to 4000) are required; `link` is optional and must be an `http(s)`
+`title` (up to 100 characters) and `text` (up to 20000) are required; `link` is optional and must be an `http(s)`
 address. `\n\n` starts a new paragraph. The text is plain text, with no HTML, and it is not translated (only the
 "Back to start" button is). Like `config.json`, the file is read at startup (restart after editing), it is ignored by
 git, and a file that is not valid stops the startup with a message. To hide the button, put `{}` in `about.json`.

@@ -157,3 +157,11 @@ test('index.html: struttura della pagina informazioni', async () => {
   }
   assert.match(tag(/<button id="about-back"[^>]*>/), /data-i18n="common\.home"/);
 });
+
+test('parseAboutFile: un testo lungo come un manifesto è accettato, oltre il limite no', () => {
+  const long = 'Paragrafo di prova.\n\n'.repeat(750); // circa 15000 caratteri
+  assert.ok(ABOUT_LIMITS.text >= 15000);
+  assert.deepEqual(parseAboutFile({ title: 'T', text: long }).errors, []);
+  const over = parseAboutFile({ title: 'T', text: 'x'.repeat(ABOUT_LIMITS.text + 1) });
+  assert.match(over.errors.join(), /"text"/);
+});
