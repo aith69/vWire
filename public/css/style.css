@@ -424,6 +424,7 @@ h1 {
 }
 .screen.screen-wide {
   max-width: 34rem;
+  padding-bottom: 4.5rem;
 }
 .about-title {
   margin: 0;
@@ -440,4 +441,12 @@ h1 {
 .about-link {
   text-align: center;
   overflow-wrap: anywhere;
+}
+.about-btn svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
 }

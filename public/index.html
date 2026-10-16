@@ -98,7 +98,6 @@
       <h2 id="about-title" class="about-title" dir="auto"></h2>
       <p id="about-text" class="hint about-text" dir="auto"></p>
       <a id="about-link" class="link about-link" target="_blank" rel="noopener noreferrer" hidden></a>
-      <button id="about-back" class="btn" type="button" data-i18n="common.home">Back to start</button>
     </section>
 
     <section class="screen" data-screen="message" hidden>
@@ -110,6 +109,9 @@
   </main>
 
   <button id="btn-about" class="about-btn" type="button" data-only-on="home" hidden>?</button>
+  <button id="about-back" class="about-btn" type="button" data-only-on="about" data-i18n-aria-label="common.close" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
 
   <div id="drop-overlay" class="drop-overlay" hidden>
     <p data-i18n="drop.hint">Drop a single file here</p>

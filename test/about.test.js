@@ -155,7 +155,14 @@ test('index.html: struttura della pagina informazioni', async () => {
   for (const id of ['about-title', 'about-text']) {
     assert.match(tag(new RegExp(`<[a-z0-9]+ id="${id}"[^>]*>`)), /dir="auto"/, id);
   }
-  assert.match(tag(/<button id="about-back"[^>]*>/), /data-i18n="common\.home"/);
+  const back = tag(/<button id="about-back"[^>]*>/);
+  assert.ok(back, 'manca #about-back');
+  assert.match(back, /data-only-on="about"/, 'la X compare solo con la pagina informazioni');
+  assert.match(back, /data-i18n-aria-label="common\.close"/, 'etichetta per i lettori di schermo');
+  assert.match(back, /\shidden(\s|>)/);
+  assert.doesNotMatch(back, /class="btn/, 'non è più il pulsante standard');
+  assert.doesNotMatch(back, /\sdata-i18n="/, 'nessun testo visibile da tradurre');
+  assert.doesNotMatch(html.match(/data-screen="about"[\s\S]*?<\/section>/)[0], /about-back/, 'la X sta fuori dalla pagina');
 });
 
 test('parseAboutFile: un testo lungo come un manifesto è accettato, oltre il limite no', () => {

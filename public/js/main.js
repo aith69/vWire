@@ -62,10 +62,14 @@ $('btn-code').onclick = () => {
 // Info page: the "?" button exists only if the server has a text to show.
 if (serverConfig.about) {
   fillAbout(serverConfig.about);
-  $('btn-about').onclick = () => showScreen('about');
+  $('btn-about').onclick = () => {
+    showScreen('about');
+    window.scrollTo(0, 0);
+  };
   $('about-back').onclick = ctx.goHome;
 } else {
   $('btn-about').remove();
+  $('about-back').remove();
 }
 
 let selecting = false;
