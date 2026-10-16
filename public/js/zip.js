@@ -8,6 +8,8 @@
  * anything that would not fit the plain format.
  */
 
+import { stripInvisible, avoidReservedName } from './names.js';
+
 export const MAX_ENTRIES = 0xffff;
 const MAX_ZIP_BYTES = 0xffffffff;
 const MAX_SEGMENT_CHARS = 120;
@@ -48,12 +50,12 @@ export const crc32 = (bytes) => crc32Update(0, bytes);
 // ---- names --------------------------------------------------------------------------------------
 
 function safeSegment(raw) {
-  let s = String(raw ?? '')
-    .replace(/[\u0000-\u001f\u007f]/g, '')
+  let s = stripInvisible(raw)
     .replace(/[\\:*?"<>|]/g, '_')
     .trim()
     .replace(/[. ]+$/, '');
   if (s === '') return 'file';
+  s = avoidReservedName(s);
   const chars = Array.from(s);
   if (chars.length > MAX_SEGMENT_CHARS) {
     const dot = s.lastIndexOf('.');

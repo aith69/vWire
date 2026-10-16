@@ -75,3 +75,13 @@ export function attachDrop(doc, { overlay, isActive, onFiles }) {
     else if (result.error !== 'empty') flashInvalid();
   });
 }
+
+/**
+ * Where a dropped selection goes: 'home' (the home page), 'guest' (the "Upload file" page of a device that
+ * scanned a QR code and has to send) or null (nowhere: the drop is ignored, but the browser never opens the file).
+ */
+export function dropDestination({ homeVisible, guestVisible, hasGuestHandler }) {
+  if (homeVisible) return 'home';
+  if (guestVisible && hasGuestHandler) return 'guest';
+  return null;
+}

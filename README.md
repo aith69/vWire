@@ -129,6 +129,8 @@ Set `TRUST_PROXY=true` so that the server reads the client address from the `X-R
 set it. Only do this when the server can be reached through the proxy alone (for example `HOST=127.0.0.1`),
 otherwise anyone could fake the header and dodge the limit on wrong codes.
 
+The WebSocket accepts only browsers that opened the page from the same host name, so other websites cannot use your server through a visitor's browser. The proxy must therefore forward the original `Host` header (the examples do). If connections are refused, the log says so.
+
 ## Configuration
 
 All settings live in one optional file, `config.json`, in the application folder.

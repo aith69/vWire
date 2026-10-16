@@ -1,12 +1,24 @@
 import { WebSocketServer } from 'ws';
 import { AttemptLimiter } from './ratelimit.js';
 import { clientIp } from './clientip.js';
+import { isAllowedOrigin } from './origin.js';
 
 const MODES = new Set(['send', 'receive']);
 const opposite = (mode) => (mode === 'send' ? 'receive' : 'send');
 
 function send(ws, obj) {
   if (ws.readyState === ws.OPEN) ws.send(JSON.stringify(obj));
+}
+
+/** An error in one handler must not stop the whole service (and every session kept in memory with it). */
+function guard(label, fn) {
+  return (...args) => {
+    try {
+      return fn(...args);
+    } catch (err) {
+      console.error(`[vwire] error in "${label}":`, err?.stack ?? err);
+    }
+  };
 }
 
 function fail(ws, code, extra = {}) {
@@ -26,6 +38,8 @@ export function attachSignaling(
 ) {
   const wss = new WebSocketServer({ noServer: true, maxPayload: maxMessageBytes });
 
+  let lastOriginWarning = 0;
+
   httpServer.on('upgrade', (req, socket, head) => {
     let pathname = null;
     try {
@@ -37,17 +51,30 @@ export function attachSignaling(
       socket.write('HTTP/1.1 404 Not Found\r\nConnection: close\r\n\r\n');
       return socket.destroy();
     }
+    if (!isAllowedOrigin(req.headers.origin, req.headers.host)) {
+      // Another website is using this server from a visitor's browser, or a proxy rewrites the Host header.
+      if (Date.now() - lastOriginWarning > 60_000) {
+        lastOriginWarning = Date.now();
+        console.warn(
+          `Warning: WebSocket refused: the page was opened from ${JSON.stringify(req.headers.origin)} ` +
+            `but the request reached the app with host ${JSON.stringify(req.headers.host)}. ` +
+            'Behind a reverse proxy, make sure the original Host header is forwarded.',
+        );
+      }
+      socket.write('HTTP/1.1 403 Forbidden\r\nConnection: close\r\n\r\n');
+      return socket.destroy();
+    }
     wss.handleUpgrade(req, socket, head, (ws) => wss.emit('connection', ws, req));
   });
 
-  sessions.on('expired', (session) => {
+  sessions.on('expired', guard('expired', (session) => {
     session.owner.sessionId = null;
     send(session.owner, { type: 'expired' });
     if (session.pending) {
       session.pending.guest.sessionId = null;
       send(session.pending.guest, { type: 'expired' });
     }
-  });
+  }));
 
   function leave(ws) {
     const id = ws.sessionId;
@@ -171,7 +198,14 @@ export function attachSignaling(
       if (!msg || typeof msg.type !== 'string' || !Object.hasOwn(handlers, msg.type)) {
         return fail(ws, 'bad_message');
       }
-      handlers[msg.type](ws, msg);
+      try {
+        handlers[msg.type](ws, msg);
+      } catch (err) {
+        // Unknown state: tell the client and start from scratch on a new connection.
+        console.error(`[vwire] error in "${msg.type}":`, err?.stack ?? err);
+        fail(ws, 'internal_error');
+        ws.close(1011);
+      }
     });
 
     ws.on('close', () => leave(ws));
