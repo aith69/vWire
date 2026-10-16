@@ -3,7 +3,7 @@ import { randomDarkTheme, applyTheme } from './theme.js';
 import { $, showScreen, showMessage } from './ui.js';
 import { startHost } from './host.js';
 import { startGuest } from './guest.js';
-import { attachDrop } from './drop.js';
+import { attachDrop, dropDestination } from './drop.js';
 import { parseServerConfig } from './limits.js';
 import { resolveSelection } from './select.js';
 import { parseAbout, fillAbout } from './about.js';
@@ -96,10 +96,19 @@ fileInput.onchange = () => {
 // Drag and drop: accepted only on the home page. Elsewhere a dropped file is ignored
 // (see drop.js: the browser must never open it, or the page and the transfer would be lost).
 const homeScreen = document.querySelector('[data-screen="home"]');
+const guestScreen = document.querySelector('[data-screen="guest"]');
+// Where a drop goes: the home page, or the "Upload file" page of a device that scanned a QR code and sends
+// (guest.js registers ctx.dropHandler only while that page is waiting for a file).
+const destination = () =>
+  dropDestination({
+    homeVisible: !homeScreen.hidden,
+    guestVisible: !guestScreen.hidden,
+    hasGuestHandler: Boolean(ctx.dropHandler),
+  });
 attachDrop(document, {
   overlay: $('drop-overlay'),
-  isActive: () => !homeScreen.hidden,
-  onFiles: sendFiles,
+  isActive: () => destination() !== null,
+  onFiles: (files) => (destination() === 'guest' ? ctx.dropHandler(files) : sendFiles(files)),
 });
 
 const id = location.hash.slice(1);

@@ -25,6 +25,7 @@ export function startGuest(ctx, { id = null } = {}) {
   const awake = keepAwake();
   const cleanup = () => {
     done = true;
+    ctx.dropHandler = null;
     awake.release();
     sig?.close();
   };
@@ -111,9 +112,7 @@ export function startGuest(ctx, { id = null } = {}) {
       status.hidden = true;
       upload.hidden = false;
       upload.onclick = () => input.click();
-      input.onchange = async () => {
-        const picked = Array.from(input.files);
-        input.value = '';
+      const chooseFiles = async (picked) => {
         if (picked.length === 0 || selecting) return;
         selecting = true;
         try {
@@ -133,6 +132,12 @@ export function startGuest(ctx, { id = null } = {}) {
           selecting = false;
         }
       };
+      input.onchange = () => {
+        const picked = Array.from(input.files);
+        input.value = '';
+        chooseFiles(picked);
+      };
+      ctx.dropHandler = chooseFiles; // drag and drop onto this page (see main.js)
     });
 
     s.on('challenge', (msg) => showChallenge(s, msg.options));
